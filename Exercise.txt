@@ -1,0 +1,61 @@
+CREATE DATABASE IF NOT EXISTS store;
+
+USE store;
+
+CREATE TABLE countries
+(
+    code INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    continent_name VARCHAR(20) NOT NULL
+);
+CREATE TABLE users
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(20) NOT NULL ,
+    email VARCHAR(20) NOT NULL UNIQUE ,
+    gender CHAR NOT NULL CHECK ( gender = 'm' OR gender = 'f'),
+    date_of_birth VARCHAR(15) NOT NULL ,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    country_code INT,
+    FOREIGN KEY (country_code) REFERENCES countries(code)
+);
+CREATE TABLE orders
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    status VARCHAR(6) CHECK ( status = 'start' OR status = 'finish'),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE TABLE products
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(10) NOT NULL ,
+    price INT DEFAULT 0,
+    status VARCHAR(10) CHECK ( status = 'valid' OR status = 'expired'),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE order_products
+(
+    quantity INT DEFAULT 0,
+    order_id INT,
+    product_id INT,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+INSERT INTO countries(name, continent_name) VALUES ('Saudi Arabia','Asia'),('Norway','Europe');
+INSERT INTO users(full_name,email,gender,date_of_birth,country_code)
+VALUES ('Ahmed Salah','ahmed0@gmail.com','m','2009-12-12',1),('Sara ali','sara9@gmail.com','f','2012-10-25',1);
+INSERT INTO orders(status, user_id) VALUES ('start','2'),('finish','2');
+INSERT INTO products(name, status) VALUES ('Book','valid'),('Car','expired');
+INSERT INTO order_products VALUES (100,1,2),(250,2,1);
+
+UPDATE countries SET name ='Spain' WHERE name = 'Norway';
+DELETE FROM store.order_products WHERE product_id = 1;
+DELETE FROM store.products WHERE id = 1;
+
+SELECT * FROM countries;
+SELECT * FROM users;
+SELECT * FROM orders;
+SELECT * FROM products;
+SELECT * FROM order_products;
